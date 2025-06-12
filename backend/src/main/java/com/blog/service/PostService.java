@@ -9,4 +9,5 @@ import org.springframework.stereotype.Service;
 public interface PostService {
     Post createPost(Post post);
     List<Post> getAllPosts();
+    Post getPostById(Long id);
 }

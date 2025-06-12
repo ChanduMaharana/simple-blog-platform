@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; 
+import API from '../components/axiosConfig'; // <-- use your axios instance here
 import { useNavigate } from 'react-router-dom';
 import '../Style/CreatePost.css';
 
@@ -8,29 +8,32 @@ function CreatePost() {
     const [isSuccess, setIsSuccess] = useState(false);
     const navigate = useNavigate();
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         setPost({ ...post, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/api/posts', post)
-        .then(res => {
-            setIsSuccess(true);
-            setPost({ title: '', content: '' });
-            setTimeout(() => {
-                setIsSuccess(false);
-                navigate('/posts'); // Redirect to view posts after creation
-            }, 1500);
-        })
-        .catch(err => console.error(err));
+        API.post('/posts', post)
+            .then((res) => {
+                setIsSuccess(true);
+                setPost({ title: '', content: '' });
+                setTimeout(() => {
+                    setIsSuccess(false);
+                    navigate('/posts');
+                }, 1500);
+            })
+            .catch((err) => {
+                console.error("Error creating post:", err);
+                alert("Failed to create post. Make sure you're logged in.");
+            });
     };
 
     return (
         <div className="create-post-container">
             <h2>Create Post</h2>
             <form className="create-post-form" onSubmit={handleSubmit}>
-                <input 
+                <input
                     type="text"
                     name="title"
                     placeholder="Title"
@@ -46,7 +49,11 @@ function CreatePost() {
                     required
                 />
                 <button type="submit">Publish Post</button>
-                {isSuccess && <div className="success-message">Post created successfully! Redirecting...</div>}
+                {isSuccess && (
+                    <div className="success-message">
+                        Post created successfully! Redirecting...
+                    </div>
+                )}
             </form>
         </div>
     );

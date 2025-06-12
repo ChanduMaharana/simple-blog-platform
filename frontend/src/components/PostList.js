@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API from '../components/axiosConfig'; // ✅ Import shared axios instance
 import '../Style/PostList.css';
 
 function PostList() {
@@ -11,11 +11,11 @@ function PostList() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/posts');
+        const response = await API.get('/posts'); // ✅ Use shared API
         setPosts(response.data);
-        setLoading(false);
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || 'Failed to load posts');
+      } finally {
         setLoading(false);
       }
     };
@@ -23,13 +23,8 @@ function PostList() {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return <div className="loading">Loading posts...</div>;
-  }
-
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
+  if (loading) return <div className="loading">Loading posts...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="post-list-container">
@@ -39,7 +34,7 @@ function PostList() {
           Create New Post
         </Link>
       </div>
-      
+
       {posts.length === 0 ? (
         <div className="no-posts">
           <p>No posts found. Be the first to create one!</p>

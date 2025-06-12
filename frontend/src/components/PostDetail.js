@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import CommentSection from './CommentSection';
 import '../Style/PostDetail.css';
 
 function PostDetail() {
@@ -31,9 +32,12 @@ function PostDetail() {
   return (
     <div className="post-detail-container">
       <article className="post-article">
-        <h2 className="post-title">{post.title}</h2>
+        <h1 className="post-title">{post.title}</h1>
         <div className="post-content">{post.content}</div>
       </article>
+      
+      <CommentSection postId={postId} />
+      
       <Link to="/posts" className="back-link">
         ← Back to all posts
       </Link>
